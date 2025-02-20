@@ -5,22 +5,40 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 function PuppyGallery() {
   const [puppyImage, setPuppyImage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [cooldown, setCooldown] = useState<boolean>(false);
+  const COOLDOWN_TIME = 500; // milliseconds (0.5 seconds)
 
   const fetchPuppyImage = async () => {
+    if (isLoading || cooldown) return; // Prevent fetching if loading or in cooldown
+    
     setIsLoading(true);
+    setCooldown(true);
+
     try {
       const response = await axios.get('https://dog.ceo/api/breeds/image/random');
       setPuppyImage(response.data.message);
     } catch (error) {
-      console.error('Error fetching puppy image:', error); // error handling
+      console.error('Error fetching puppy image:', error);
     }
+    
     setIsLoading(false);
+    
+    // Start cooldown timer
+    setTimeout(() => {
+      setCooldown(false);
+    }, COOLDOWN_TIME);
   };
 
   // Fetch a puppy image when the component mounts
   useEffect(() => {
     fetchPuppyImage();
   }, []); // Empty dependency array means this runs once on mount
+
+  const getButtonState = () => {
+    if (isLoading) return 'Loading...';
+    if (cooldown) return 'Wait a moment...';
+    return 'Show Me A Puppy! 🐾';
+  };
 
   return (
     <div className="min-vh-100 w-100 bg-light d-flex justify-content-center align-items-center">
@@ -35,16 +53,22 @@ function PuppyGallery() {
                 Discover adorable puppies with just one click!
               </p>
               <button 
-                className="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm fs-5" 
+                className={`btn btn-lg px-5 py-3 rounded-pill shadow-sm fs-5 ${
+                  isLoading || cooldown ? 'btn-secondary' : 'btn-primary'
+                }`}
                 onClick={fetchPuppyImage}
-                disabled={isLoading}
+                disabled={isLoading || cooldown}
               >
                 {isLoading ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                     Fetching Puppy...
                   </>
-                ) : 'Show Me A Puppy! 🐾'}
+                ) : cooldown ? (
+                  'Wait a moment... 🐕'
+                ) : (
+                  'Show Me A Puppy! 🐾'
+                )}
               </button>
             </div>
 
@@ -59,9 +83,11 @@ function PuppyGallery() {
                 </div>
                 <div className="position-absolute bottom-0 start-50 translate-middle-x mb-4">
                   <button 
-                    className="btn btn-light btn-lg shadow"
+                    className={`btn btn-lg shadow ${
+                      isLoading || cooldown ? 'btn-secondary' : 'btn-light'
+                    }`}
                     onClick={fetchPuppyImage}
-                    disabled={isLoading}
+                    disabled={isLoading || cooldown}
                   >
                     Next Puppy →
                   </button>

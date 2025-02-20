@@ -12,7 +12,7 @@ function PuppyGallery() {
       const response = await axios.get('https://dog.ceo/api/breeds/image/random');
       setPuppyImage(response.data.message);
     } catch (error) {
-      console.error('Error fetching puppy image:', error);
+      console.error('Error fetching puppy image:', error); // error handling
     }
     setIsLoading(false);
   };

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import RecommendedPuppies from './RecommendedPups';
 
 function PuppyGallery() {
   const [puppyImage, setPuppyImage] = useState<string>('');
@@ -29,16 +30,9 @@ function PuppyGallery() {
     }, COOLDOWN_TIME);
   };
 
-  // Fetch a puppy image when the component mounts
   useEffect(() => {
     fetchPuppyImage();
   }, []); // Empty dependency array means this runs once on mount
-
-  const getButtonState = () => {
-    if (isLoading) return 'Loading...';
-    if (cooldown) return 'Wait a moment...';
-    return 'Show Me A Puppy! 🐾';
-  };
 
   return (
     <div className="min-vh-100 w-100 bg-light d-flex justify-content-center align-items-center">
@@ -95,26 +89,13 @@ function PuppyGallery() {
               </div>
             )}
           </div>
+
+          {/* Render the recommended puppies component */}
+          <RecommendedPuppies />
         </div>
       </div>
-      
-      <style>
-        {`
-          .image-container {
-            height: 500px;
-            width: 100%;
-            position: relative;
-          }
-          
-          @media (max-width: 768px) {
-            .image-container {
-              height: 350px;
-            }
-          }
-        `}
-      </style>
     </div>
   );
 }
 
-export default PuppyGallery; 
+export default PuppyGallery;

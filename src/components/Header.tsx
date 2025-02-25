@@ -15,6 +15,9 @@ const Header: React.FC = () => {
                     <li className="nav-item">
                         <Link className="nav-link text-white" to="/contact">Contact</Link>
                     </li>
+                    <li className="nav-item">
+                        <Link className="nav-link text-white" to="/settings">Settings</Link>
+                    </li>
                 </ul>
             </nav>
         </header>
